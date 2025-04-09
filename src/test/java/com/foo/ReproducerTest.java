@@ -55,7 +55,7 @@ public class ReproducerTest {
         List<MyEntity> companies2 = session.aggregate(MyEntity.class).execute(MyEntity.class, options).toList();
         System.out.println(companies2.size()); // 0
         AggregationOptions options2 = new AggregationOptions();
-        options2 = options2.allowDiskUse(true);
+        options2 = options2.bypassDocumentValidation(true);
         List<MyEntity> companies3 = session.aggregate(MyEntity.class).execute(MyEntity.class, options2).toList();
         System.out.println(companies3.size()); // 0
     }
