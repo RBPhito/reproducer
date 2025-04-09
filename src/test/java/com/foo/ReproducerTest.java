@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
+import dev.morphia.aggregation.AggregationOptions;
 import dev.morphia.transactions.MorphiaSession;
 import org.bson.UuidRepresentation;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,8 @@ public class ReproducerTest {
 
     private Datastore datastore;
 
+
+    /*
     @Test
     public void reproduce() {
         MorphiaSession session = datastore.startSession();
@@ -38,6 +41,23 @@ public class ReproducerTest {
         System.out.println(companies3.size());
         List<MyEntity> companies4 = session.aggregate(MyEntity.class).execute(MyEntity.class).toList();
         System.out.println(companies4.size());
+    }*/
+
+    @Test
+    public void reproduce2() {
+        MorphiaSession session = datastore.startSession();
+        session.startTransaction();
+        session.save(new MyEntity());
+        List<MyEntity> companies1 = session.aggregate(MyEntity.class).execute(MyEntity.class).toList();
+        System.out.println(companies1.size()); // 1
+        AggregationOptions options = new AggregationOptions();
+        options = options.allowDiskUse(true);
+        List<MyEntity> companies2 = session.aggregate(MyEntity.class).execute(MyEntity.class, options).toList();
+        System.out.println(companies2.size()); // 0
+        AggregationOptions options2 = new AggregationOptions();
+        options2 = options2.allowDiskUse(true);
+        List<MyEntity> companies3 = session.aggregate(MyEntity.class).execute(MyEntity.class, options2).toList();
+        System.out.println(companies3.size()); // 0
     }
 
     @NotNull
@@ -47,7 +67,7 @@ public class ReproducerTest {
 
     @NotNull
     public String dockerImageName() {
-        return "mongo:7";
+        return "mongo:8";
     }
 
     @BeforeClass
