@@ -9,4 +9,6 @@ public class MyEntity {
 
     @Id
     private ObjectId id;
+
+    private Boolean boolField;
 }
